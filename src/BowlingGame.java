@@ -1,19 +1,28 @@
+import java.util.Scanner;
 public class BowlingGame {
     public static void main(String[] args) {
         mainMenu();
-
     }
 
     // Main menu (void & no parameter)
     public static void mainMenu() {
-        System.out.println("   _____   __             _     __         _____                     \r\n" + //
-                           "  / ___/  / /_   _____   (_)   / /__  ___ /__  /  ____    ____   ___ \r\n" + //
-                           "  \\__ \\  / __/  / ___/  / /   / //_/ / _ \\  / /  / __ \\  / __ \\ / _ \\\r\n" + //
-                           " ___/ / / /_   / /     / /   / ,<   /  __/ / /__/ /_/ / / / / //  __/\r\n" + //
-                        "/____/  \\__/  /_/     /_/   /_/|_|  \\___/ /____/\\____/ /_/ /_/ \\___/");
+        System.out.println("       ____                ______  ___ __     \r\n" + //
+                        "      / __ )____ _      __/ / __ )/ (_) /_____\r\n" + //
+                        "     / __  / __ \\ | /| / / / __  / / / __/_  /\r\n" + //
+                        "    / /_/ / /_/ / |/ |/ / / /_/ / / / /_  / /_\r\n" + //
+                        "   /_____/\\____/|__/|__/_/_____/_/_/\\__/ /___/\r\n");
 
-        System.out.println("\nWelcome to a Bowling Game Score Calculator");
+        System.out.println("-- Welcome to a Bowling Game Score Calculator --");
+        System.out.println("");
+        inputPlayer(); // call inputPlayer() in mainMenu()
     }
 
-    
+    // Input how many player (1, 2, 3, ...)
+    public static void inputPlayer() {
+        int totalPlayer;
+        Scanner input = new Scanner(System.in);
+        System.out.print("Total player (max 6): ");
+        totalPlayer = input.nextInt();
+        input.close();
+    }
 }
