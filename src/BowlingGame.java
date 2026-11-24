@@ -40,7 +40,7 @@ public class BowlingGame {
             }
         }
         char[][][] frames = inputFrames(totalPlayer); // call inputFrames() in inputPlayer()
-        // next: calculate the score from frames
+        calculateScores(frames); // call calculateScores() in inputPlayer()
     }
 
     // Input every throw of the 10 frames for every player
@@ -49,10 +49,10 @@ public class BowlingGame {
     public static char[][][] inputFrames(int totalPlayer) {
         char[][][] frames = new char[totalPlayer][10][3];
 
-        for (int p = 0; p < totalPlayer; p++) {
-            System.out.println("\n=== Player " + (p + 1) + " ===");
-
-            for (int f = 0; f < 10; f++) {
+        // Players take turns every frame: P1 frame 1 -> P2 frame 1 -> ... -> P1 frame 2 -> ...
+        for (int f = 0; f < 10; f++) {
+            for (int p = 0; p < totalPlayer; p++) {
+                System.out.println("\n--- Frame " + (f + 1) + " | Player " + (p + 1) + " ---");
                 boolean lastFrame = (f == 9);
                 char t1, t2 = ' ', t3 = ' ';
 
@@ -127,7 +127,7 @@ public class BowlingGame {
         }
     }
 
-  // Calculate and display the final score for each player
+    // Calculate and display the final score for each player
     public static void calculateScores(char[][][] frames) {
         System.out.println("\n=== FINAL SCORES ===");
 
