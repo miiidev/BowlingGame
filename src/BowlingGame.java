@@ -127,56 +127,75 @@ public class BowlingGame {
         }
     }
 
-  // Calculate and display the final score for each player
-    public static void calculateScores(char[][][] frames) {
-        System.out.println("\n=== FINAL SCORES ===");
+  // Calculate and return the final score for each player
+public static int[] calculateScores(char[][][] frames) {
+    int[] finalScores = new int[frames.length];
 
-        for (int p = 0; p < frames.length; p++) {
-            // 1. Flatten all valid throws for this player into a single array (max 21 rolls)
-            char[] rolls = new char[21];
-            int rollCount = 0;
-            for (int f = 0; f < 10; f++) {
-                for (int t = 0; t < 3; t++) {
-                    if (frames[p][f][t] != ' ') {
-                        rolls[rollCount++] = frames[p][f][t];
-                    }
+    for (int p = 0; p < frames.length; p++) {
+        // 1. Flatten all valid throws for this player into a single array (max 21 rolls)
+        char[] rolls = new char[21];
+        int rollCount = 0;
+        for (int f = 0; f < 10; f++) {
+            for (int t = 0; t < 3; t++) {
+                char throwChar = frames[p][f][t];
+                if (throwChar != ' ' && throwChar != '\0') {
+                    rolls[rollCount++] = throwChar;
                 }
             }
+        }
 
-            // 2. Calculate score frame by frame
-            int totalScore = 0;
-            int rollIndex = 0;
+        // 2. Calculate score frame by frame
+        int totalScore = 0;
+        int rollIndex = 0;
+        for (int frame = 0; frame < 10; frame++) {
+            if (rolls[rollIndex] == 'X') {
+                // Strike: 10 + next two rolls
+                int bonus = 0;
+                if (rolls[rollIndex + 2] == '/') {
+                    bonus = 10;
+                } else {
+                    if (rolls[rollIndex + 1] == 'X') bonus += 10;
+                    else if (rolls[rollIndex + 1] != '-') bonus += rolls[rollIndex + 1] - '0';
 
-            for (int frame = 0; frame < 10; frame++) {
-                if (rolls[rollIndex] == 'X') { // Strike
-                    totalScore += 10 + getStrikeBonus(rolls, rollIndex);
-                    rollIndex += 1;
-                } else if (rolls[rollIndex + 1] == '/') { // Spare
-                    totalScore += 10 + getRollValue(rolls, rollIndex + 2);
-                    rollIndex += 2;
-                } else { // Open frame
-                    totalScore += getRollValue(rolls, rollIndex) + getRollValue(rolls, rollIndex + 1);
-                    rollIndex += 2;
+                    if (rolls[rollIndex + 2] == 'X') bonus += 10;
+                    else if (rolls[rollIndex + 2] != '-') bonus += rolls[rollIndex + 2] - '0';
                 }
+                
+                totalScore += 10 + bonus;
+                rollIndex += 1;
+                
+            } else if (rolls[rollIndex + 1] == '/') {
+                // Spare: 10 + next single roll
+                int bonus = 0;
+                if (rolls[rollIndex + 2] == 'X') bonus = 10;
+                else if (rolls[rollIndex + 2] != '-') bonus = rolls[rollIndex + 2] - '0';
+
+                totalScore += 10 + bonus;
+                rollIndex += 2;
+                
+            } else {
+                // Open frame: sum of the two rolls
+                int firstRoll = 0;
+                if (rolls[rollIndex] != '-') {
+                    firstRoll = rolls[rollIndex] - '0';
+                }
+
+                int secondRoll = 0;
+                if (rolls[rollIndex + 1] != '-') {
+                    secondRoll = rolls[rollIndex + 1] - '0';
+                }
+
+                totalScore += firstRoll + secondRoll;
+                rollIndex += 2;
             }
-
-            System.out.println("Player " + (p + 1) + " Total Score: " + totalScore);
         }
+
+        // Store this player's final score in the array
+        finalScores[p] = totalScore;
     }
 
-    // Helper: Gets the pin value of a single roll
-    private static int getRollValue(char[] rolls, int index) {
-        if (rolls[index] == 'X') return 10;
-        return rolls[index] - '0';
-    }
+    return finalScores;
+}
 
-    // Helper: Gets the next two rolls after a strike (handles spares properly)
-    private static int getStrikeBonus(char[] rolls, int strikeIndex) {
-        int firstNext = getRollValue(rolls, strikeIndex + 1);
-        if (rolls[strikeIndex + 2] == '/') {
-            return 10; // Next two rolls equal 10 total
-        }
-        return firstNext + getRollValue(rolls, strikeIndex + 2);
-    }
 }
 
