@@ -316,7 +316,7 @@ public class BowlingGame {
         return new int[]{totalScore, scoredFrames, pendingBonus ? 1 : 0};
     }
 
-    private static int calculateTenthFrameScore(char first, char second, char third) {
+    public static int calculateTenthFrameScore(char first, char second, char third) {
         if (first == 'X') {
             if (second == ' ' || third == ' ') {
                 return -1;
@@ -335,7 +335,7 @@ public class BowlingGame {
         return getThrowValue(first, ' ') + getThrowValue(second, first);
     }
 
-    private static int collectNextRollValues(char[][] playerFrames, int startFrame, int[] values, int needed) {
+    public static int collectNextRollValues(char[][] playerFrames, int startFrame, int[] values, int needed) {
         int count = 0;
         for (int f = startFrame; f < 10 && count < needed; f++) {
             char previous = ' ';
@@ -351,7 +351,7 @@ public class BowlingGame {
         return count;
     }
 
-    private static int getThrowValue(char roll, char previousRoll) {
+    public static int getThrowValue(char roll, char previousRoll) {
         if (roll == 'X') {
             return 10;
         }
