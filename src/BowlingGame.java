@@ -382,7 +382,7 @@ public class BowlingGame {
         int totalPlayers = finalScores.length;
 
         System.out.println("\n=================================================");
-        System.out.println("                === FINAL RESULTS ===");
+        System.out.println("              === FINAL RESULTS ===");
         System.out.println("Rank | Player | Score");
         System.out.println("---------------------------------------");
 
