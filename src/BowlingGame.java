@@ -40,7 +40,8 @@ public class BowlingGame {
             }
         }
         char[][][] frames = inputFrames(totalPlayer); // call inputFrames() in inputPlayer()
-        calculateScores(frames); // call calculateScores() in inputPlayer()
+        int[] finalScores = calculateScores(frames); // call calculateScores() in inputPlayer()
+        displayFinalResults(finalScores); // show the final ranking and winner
     }
 
     // Input every throw of the 10 frames for every player
@@ -215,7 +216,7 @@ public class BowlingGame {
     public static void displayLiveScores(char[][][] frames, int currentPlayer, int currentFrame) {
         int totalPlayers = frames.length;
         int[] scores = new int[totalPlayers];
-        int[] completedFrames = new int[totalPlayers];
+        int[] framesBowled = new int[totalPlayers];
         boolean[] pendingBonus = new boolean[totalPlayers];
         int leaderScore = 0;
         int leader = 0;
@@ -223,7 +224,10 @@ public class BowlingGame {
         for (int p = 0; p < totalPlayers; p++) {
             int[] progress = calculateLiveProgress(frames[p]);
             scores[p] = progress[0];
-            completedFrames[p] = progress[1];
+            // The Frame column shows how many frames the player has bowled.
+            // progress[1] counts only frames whose score is final, which lags
+            // behind whenever a strike or spare bonus is still pending.
+            framesBowled[p] = countFramesBowled(frames[p]);
             pendingBonus[p] = (progress[2] == 1);
 
             if (p == 0 || scores[p] > leaderScore) {
@@ -258,9 +262,20 @@ public class BowlingGame {
             }
 
             System.out.printf("%4d | P%-5d | %5d | %5d | %s%s%n",
-                    rank, (p + 1), completedFrames[p], scores[p], status, marker);
+                    rank, (p + 1), framesBowled[p], scores[p], status, marker);
         }
         System.out.println("=================================================\n");
+    }
+
+    // Count how many frames a player has started (first throw already entered).
+    public static int countFramesBowled(char[][] playerFrames) {
+        int bowled = 0;
+        for (int f = 0; f < 10; f++) {
+            if (playerFrames[f][0] != ' ') {
+                bowled++;
+            }
+        }
+        return bowled;
     }
 
     // Returns {confirmed score, scored frames, has pending strike/spare bonus}.
@@ -362,6 +377,59 @@ public class BowlingGame {
         return roll - '0';
     }
 
-   
+    // Show the final ranking and announce the winner after all 10 frames.
+    public static void displayFinalResults(int[] finalScores) {
+        int totalPlayers = finalScores.length;
+
+        System.out.println("\n=================================================");
+        System.out.println("=== FINAL RESULTS ===");
+        System.out.println("Rank | Player | Score");
+        System.out.println("---------------------------------------");
+
+        for (int p = 0; p < totalPlayers; p++) {
+            int rank = 1;
+            for (int other = 0; other < totalPlayers; other++) {
+                if (finalScores[other] > finalScores[p]) {
+                    rank++;
+                }
+            }
+
+            String tag = (rank == 1) ? " <- WINNER" : "";
+            System.out.printf("%4d | P%-5d | %5d%s%n", rank, (p + 1), finalScores[p], tag);
+        }
+        System.out.println("=================================================\n");
+
+        // Find the highest score and how many players share it (ties).
+        int best = finalScores[0];
+        int winners = 1;
+        for (int p = 1; p < totalPlayers; p++) {
+            if (finalScores[p] > best) {
+                best = finalScores[p];
+                winners = 1;
+            } else if (finalScores[p] == best) {
+                winners++;
+            }
+        }
+
+        if (winners == 1) {
+            for (int p = 0; p < totalPlayers; p++) {
+                if (finalScores[p] == best) {
+                    System.out.println("Winner: Player " + (p + 1) + " with " + best + " points!");
+                }
+            }
+        } else {
+            StringBuilder names = new StringBuilder();
+            for (int p = 0; p < totalPlayers; p++) {
+                if (finalScores[p] == best) {
+                    if (names.length() > 0) {
+                        names.append(", ");
+                    }
+                    names.append("Player ").append(p + 1);
+                }
+            }
+            System.out.println("It's a tie! " + names + " with " + best + " points!");
+        }
+    }
+
 }
 
