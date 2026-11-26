@@ -232,7 +232,8 @@ public class BowlingGame {
             }
         }
 
-        System.out.println("\n=== LIVE SCOREBOARD | After Player " + (currentPlayer + 1)
+        System.out.println("\n=================================================");
+        System.out.println("=== LIVE SCOREBOARD | After Player " + (currentPlayer + 1)
                 + ", Frame " + (currentFrame + 1) + " ===");
         System.out.println("Rank | Player | Frame | Score | Status");
         System.out.println("---------------------------------------");
@@ -259,7 +260,7 @@ public class BowlingGame {
             System.out.printf("%4d | P%-5d | %5d | %5d | %s%s%n",
                     rank, (p + 1), completedFrames[p], scores[p], status, marker);
         }
-        System.out.println();
+        System.out.println("=================================================\n");
     }
 
     // Returns {confirmed score, scored frames, has pending strike/spare bonus}.
